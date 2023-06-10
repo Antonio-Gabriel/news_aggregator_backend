@@ -30,8 +30,9 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
-    
+
     'external_services' => [
-        'newsapi_key' => env('EXTERNAL_NEWSAPI_KEY')
+        'newsapi_key' => env('EXTERNAL_NEWSAPI_KEY'),
+        'nytimes_key' => env('EXTERNAL_NYTIMES_KEY')
     ]
 ];
