@@ -2,8 +2,9 @@
 
 namespace App\Console\Commands;
 
-use App\Services\NewsApiGateway\NewsArticles;
 use Illuminate\Console\Command;
+use App\Services\NewsApiGateway\NewsArticles;
+use App\Services\NyTimesApiGateway\NyNewsArticles;
 
 class Playground extends Command
 {
@@ -18,8 +19,13 @@ class Playground extends Command
 
     public function handle()
     {
-        $articles = new NewsArticles();
-        $data = $articles->get();
+        // $articles = new NewsArticles();
+        // $data = $articles->get();
+
+        // dd($data);
+
+        $nyNewsArticlesService = new NyNewsArticles();
+        $data = $nyNewsArticlesService->get();
 
         dd($data);
     }
