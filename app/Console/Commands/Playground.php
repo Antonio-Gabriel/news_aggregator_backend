@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Services\NewsApiGateway\NewsArticles;
 use Illuminate\Console\Command;
 
 class Playground extends Command
@@ -11,20 +12,15 @@ class Playground extends Command
      *
      * @var string
      */
-    protected $signature = 'app:playground';
+    protected $signature = 'load:external-articles';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Command description';
 
-    /**
-     * Execute the console command.
-     */
     public function handle()
     {
-        // Something
+        $articles = new NewsArticles();
+        $data = $articles->get();
+
+        dd($data);
     }
 }
