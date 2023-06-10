@@ -26,16 +26,5 @@ class Article
         $this->source = data_get(data_get($newsData, "source"), "name");
 
         $this->publishedAt = new DateTime(data_get($newsData, "publishedAt"));
-
-        dd([
-            "url" => $this->url,
-            "title" => $this->title,
-            "author" => $this->author,
-            "source" => $this->source,
-            "content" => $this->content,
-            "image_url" => $this->image_url,
-            "description" => $this->description,
-            "publishedAt" => $this->publishedAt,
-        ]);
     }
 }
