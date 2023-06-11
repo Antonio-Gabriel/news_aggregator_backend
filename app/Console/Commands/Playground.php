@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Services\NewsApiGateway\NewsArticles;
 use App\Services\NyTimesApiGateway\NyNewsArticles;
 
 class Playground extends Command
