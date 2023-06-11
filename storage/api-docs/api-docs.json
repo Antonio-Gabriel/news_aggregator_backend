@@ -1,0 +1,37 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "News Aggregator",
+        "description": "An application to aggregate news based to external news website",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api": {
+            "get": {
+                "tags": [
+                    "Welcome"
+                ],
+                "description": "Welcome page",
+                "responses": {
+                    "200": {
+                        "description": "Welcome page"
+                    }
+                }
+            }
+        },
+        "/api/v1/users": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "List all users",
+                "operationId": "index",
+                "responses": {
+                    "200": {
+                        "description": "Users"
+                    }
+                }
+            }
+        }
+    }
+}
