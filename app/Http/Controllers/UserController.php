@@ -73,9 +73,6 @@ class UserController extends Controller
 
     public function update(UserRequest $requestDto, int $userId)
     {
-        // Log::channel('stderr')->debug("Debuging", [$userModel]);
-        // Log::channel('stderr')->debug("Debuging", $requestDto->toArray());
-
         try {
             $userUpdated = $this->updateUser->execute(
                 new UserCommand(
