@@ -3,7 +3,6 @@
 namespace App\Repositories;
 
 use App\Models\User;
-use Ramsey\Uuid\Guid\Guid;
 use Illuminate\Support\Collection;
 use App\Domain\Commands\UserCommand;
 use Illuminate\Database\Eloquent\Model;
@@ -30,8 +29,23 @@ class UsersRepository implements IUserRepository
         ]);
     }
 
-    public function getById(Guid $userId): ?Model
+    public function update(UserCommand $entity, int $id): bool
     {
-        return null;
+        return User::where('id', $id)
+            ->update([
+                "name" => $entity->name,
+                "email" => $entity->email,
+                "password" => $entity->password
+            ]);
+    }
+
+    public function getByEmail(string $email): ?Model
+    {
+        return User::where('email', $email)->first();
+    }
+
+    public function getById(int $id): ?Model
+    {
+        return User::find($id);
     }
 }
