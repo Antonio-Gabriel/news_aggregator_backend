@@ -3,15 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Domain\Commands\UserCommand;
+use App\Domain\System\Queries\GetUserByEmailQuery;
+use App\Domain\System\Queries\GetUserByIdQuery;
 use App\Domain\System\Queries\GetUsersQuery;
 use App\Domain\System\UseCases\CreateUserUsecase;
+use App\Domain\System\UseCases\UpdateUserUsecase;
+use App\Exceptions\User\UserAlreadyExists;
+use App\Exceptions\User\UserDoesntExists;
 use App\Http\Requests\UserRequest;
+use App\Models\User;
+use Exception;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
     public function __construct(
         private GetUsersQuery $usersQuery,
-        private CreateUserUsecase $createUser
+        private GetUserByIdQuery $userById,
+        private GetUserByEmailQuery $userQuery,
+        private CreateUserUsecase $createUser,
+        private UpdateUserUsecase $updateUser
     ) {
     }
 
@@ -30,8 +41,10 @@ class UserController extends Controller
      */
     public function index()
     {
+        $users = $this->usersQuery->execute();
+
         return response()->json([
-            "users" => $this->usersQuery->execute()
+            "users" => $users
         ]);
     }
 
@@ -43,21 +56,45 @@ class UserController extends Controller
             $response = $this->createUser->execute(
                 new UserCommand($requestDto['name'], $requestDto['email'], $requestDto['password'])
             );
-        } catch (\App\Exceptions\UserAlreadyExists $ex) {
+        } catch (UserAlreadyExists $ex) {
             return response(content: $ex->getMessage(), status: 400);
         }
 
         return response()->json($response);
     }
 
-    public function show()
+    public function show(int $id)
     {
-        // get user by id
+        $user = $this->userById->execute($id);
+        return response()->json([
+            "user" => $user
+        ]);
     }
 
-    public function update()
+    public function update(UserRequest $requestDto, int $userId)
     {
-        // Update 
+        // Log::channel('stderr')->debug("Debuging", [$userModel]);
+        // Log::channel('stderr')->debug("Debuging", $requestDto->toArray());
+
+        try {
+            $userUpdated = $this->updateUser->execute(
+                new UserCommand(
+                    $requestDto['name'],
+                    $requestDto['email'],
+                    bcrypt($requestDto['password'])
+                ),
+                $userId
+            );
+
+            if (!$userUpdated) {
+                Log::error("An error occured on update process");
+                return response("An error occured!", status: 400);
+            }
+        } catch (UserDoesntExists $ex) {
+            return response(content: $ex->getMessage(), status: 400);
+        }
+
+        return response()->json("User updated successfully");
     }
 
     public function destroy()
