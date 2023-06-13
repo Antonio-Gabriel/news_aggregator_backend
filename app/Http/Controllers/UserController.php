@@ -7,22 +7,25 @@ use App\Domain\System\Queries\GetUserByEmailQuery;
 use App\Domain\System\Queries\GetUserByIdQuery;
 use App\Domain\System\Queries\GetUsersQuery;
 use App\Domain\System\UseCases\CreateUserUsecase;
+use App\Domain\System\UseCases\DeleteUserUsecase;
 use App\Domain\System\UseCases\UpdateUserUsecase;
 use App\Exceptions\User\UserAlreadyExists;
 use App\Exceptions\User\UserDoesntExists;
 use App\Http\Requests\UserRequest;
-use App\Models\User;
-use Exception;
-use Illuminate\Support\Facades\Log;
+use App\Http\Errors\BadRequest;
+
 
 class UserController extends Controller
 {
+    use BadRequest;
+
     public function __construct(
         private GetUsersQuery $usersQuery,
         private GetUserByIdQuery $userById,
         private GetUserByEmailQuery $userQuery,
         private CreateUserUsecase $createUser,
-        private UpdateUserUsecase $updateUser
+        private UpdateUserUsecase $updateUser,
+        private DeleteUserUsecase $deleteUser
     ) {
     }
 
@@ -35,8 +38,12 @@ class UserController extends Controller
      *     tags={"Users"},     
      *     @OA\Response(
      *         response=200,
-     *         description="Users"              
-     *     )     
+     *         description="Success",
+     *         @OA\JsonContent(     
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/UserRequest")
+     *         ),          
+     *     )         
      * )
      */
     public function index()
@@ -48,21 +55,88 @@ class UserController extends Controller
         ]);
     }
 
-    public function store(UserRequest $request)
+    /**     
+     * @return Response
+     * @OA\Post(
+     *     path="/api/v1/users",
+     *     summary="Create new user",
+     *     operationId="store",
+     *     tags={"Users"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="User object",
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                  @OA\Property(
+     *                     property="name",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="email",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="password",
+     *                     type="string"
+     *                 ),
+     *             )
+     *         )
+     *     ),     
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success",
+     *         @OA\JsonContent(ref="#/components/schemas/UserRequest")         
+     *     )         
+     * )
+     */
+    public function store(UserRequest $requestDTO)
     {
         try {
-            $requestDto = $request->validated();
+            $requestDTO->validated();
 
-            $response = $this->createUser->execute(
-                new UserCommand($requestDto['name'], $requestDto['email'], $requestDto['password'])
+            $userCreated = $this->createUser->execute(
+                new UserCommand(...$requestDTO->only([
+                    "name",
+                    "email",
+                    "password"
+                ]))
             );
+
+            $this->error_400($userCreated);
+
+            return response()->json($userCreated);
         } catch (UserAlreadyExists $ex) {
             return response(content: $ex->getMessage(), status: 400);
         }
-
-        return response()->json($response);
     }
 
+    /**     
+     * @return Response
+     * @OA\Get(
+     *     path="/api/v1/users/{id}",
+     *     summary="Get user by id",
+     *     operationId="show",
+     *     tags={"Users"},
+     *     @OA\Parameter(
+     *         description="User id parameter",
+     *         in="path",
+     *         name="id",
+     *         required=true     
+     *     ),
+     *      
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success",
+     *         @OA\JsonContent(ref="#/components/schemas/UserRequest"),          
+     *     ),
+     * 
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad request"
+     *     )         
+     * )
+     */
     public function show(int $id)
     {
         $user = $this->userById->execute($id);
@@ -71,31 +145,102 @@ class UserController extends Controller
         ]);
     }
 
-    public function update(UserRequest $requestDto, int $userId)
+    /**     
+     * @return Response
+     * @OA\Put(
+     *     path="/api/v1/users/{id}",
+     *     summary="Update user",
+     *     operationId="update",
+     *     tags={"Users"},
+     *     @OA\Parameter(
+     *         description="User id parameter",
+     *         in="path",
+     *         name="id",
+     *         required=true     
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="User object",
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                  @OA\Property(
+     *                     property="name",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="email",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="password",
+     *                     type="string"
+     *                 )
+     *             )
+     *         )
+     *     ),     
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success"
+     *     )         
+     * )
+     */
+    public function update(UserRequest $requestDTO, int $userId)
     {
         try {
+            $requestDTO->validated();
             $userUpdated = $this->updateUser->execute(
-                new UserCommand(
-                    $requestDto['name'],
-                    $requestDto['email'],
-                    bcrypt($requestDto['password'])
-                ),
+                new UserCommand(...$requestDTO->only([
+                    "name",
+                    "email",
+                    "password"
+                ])),
                 $userId
             );
 
-            if (!$userUpdated) {
-                Log::error("An error occured on update process");
-                return response("An error occured!", status: 400);
-            }
+            $this->error_400($userUpdated);
+
+            return response()->json("User updated successfully");
         } catch (UserDoesntExists $ex) {
             return response(content: $ex->getMessage(), status: 400);
         }
-
-        return response()->json("User updated successfully");
     }
 
-    public function destroy()
+    /**     
+     * @return Response
+     * @OA\Delete(
+     *     path="/api/v1/users/{id}",
+     *     summary="Delete user",
+     *     operationId="destroy",
+     *     tags={"Users"},
+     *     @OA\Parameter(
+     *         description="User id parameter",
+     *         in="path",
+     *         name="id",
+     *         required=true     
+     *     ),
+     *      
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success"          
+     *     ),
+     * 
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad request"
+     *     )         
+     * )
+     */
+    public function destroy(int $id)
     {
-        // delete
+        try {
+            $deletedUser = $this->deleteUser->execute($id);
+
+            $this->error_400($deletedUser);
+
+            return response()->json("User deleted successfully");
+        } catch (UserDoesntExists $ex) {
+            return response(content: $ex->getMessage(), status: 400);
+        }
     }
 }
