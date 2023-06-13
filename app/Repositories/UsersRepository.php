@@ -48,4 +48,9 @@ class UsersRepository implements IUserRepository
     {
         return User::find($id);
     }
+
+    public function delete(int $id)
+    {
+        return User::where('id', $id)->delete();
+    }
 }
