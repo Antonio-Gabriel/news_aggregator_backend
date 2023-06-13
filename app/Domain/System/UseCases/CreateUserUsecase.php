@@ -4,7 +4,7 @@ namespace App\Domain\System\UseCases;
 
 use App\Domain\Commands\UserCommand;
 use App\Domain\Interfaces\IUserRepository;
-use App\Exceptions\UserAlreadyExists;
+use App\Exceptions\User\UserAlreadyExists;
 use Illuminate\Support\Facades\Log;
 
 class CreateUserUsecase
