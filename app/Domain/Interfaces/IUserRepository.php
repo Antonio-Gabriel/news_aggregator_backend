@@ -19,4 +19,6 @@ interface IUserRepository
     public function getByEmail(string $email): ?Model;
 
     public function getById(int $id): ?Model;
+
+    public function delete(int $id);
 }
