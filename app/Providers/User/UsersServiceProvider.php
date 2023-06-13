@@ -6,6 +6,7 @@ use App\Domain\System\Queries\GetUserByEmailQuery;
 use App\Domain\System\Queries\GetUserByIdQuery;
 use App\Domain\System\Queries\GetUsersQuery;
 use App\Domain\System\UseCases\CreateUserUsecase;
+use App\Domain\System\UseCases\DeleteUserUsecase;
 use App\Domain\System\UseCases\UpdateUserUsecase;
 use App\Http\Controllers\UserController;
 use App\Repositories\UsersRepository;
@@ -26,14 +27,18 @@ class UsersServiceProvider extends ServiceProvider
             $userByEmailQuery = new GetUserByEmailQuery($userRepository);
             $userByIdQuery = new GetUserByIdQuery($userRepository);
 
+            // Usecases
             $createUserUsecase = new CreateUserUsecase($userRepository);
             $updateUserUsecase = new UpdateUserUsecase($userRepository);
+            $deleteUserUsecase = new DeleteUserUsecase($userRepository);
+
             return new UserController(
                 $userQuery,
                 $userByIdQuery,
                 $userByEmailQuery,
                 $createUserUsecase,
-                $updateUserUsecase
+                $updateUserUsecase,
+                $deleteUserUsecase
             );
         });
     }
