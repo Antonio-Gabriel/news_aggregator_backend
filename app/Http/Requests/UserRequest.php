@@ -4,6 +4,41 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+
+/**
+ * Class UserRequest
+ * @package App\Http\Requests
+ * @OA\Schema(
+ *     schema="UserRequest",
+ *     type="object",
+ *     title="Create/Update UserRequest",
+ *     required={"name", "email", "password"},
+ *     properties={
+ *         @OA\Property(property="id", type="int"),
+ *         @OA\Property(property="name", type="string"),
+ *         @OA\Property(property="email", type="string"),
+ *         @OA\Property(property="created_at", type="string"),
+ *         @OA\Property(property="updated_at", type="string")
+ *     }
+ * )
+ * @OA\Schema(
+ *     schema="UserRequestValidationError",
+ *     type="object",
+ *     title="Create/Update UserRequestValidationError",
+ *     properties={
+ *         @OA\Property(property="message", type="string", default="The given data was invalid."),
+ *         @OA\Property(property="errors", type="object", properties={
+ *             @OA\Property(property="id", type="array", @OA\Items(type="string")),
+ *             @OA\Property(property="name", type="array", @OA\Items(type="string")),
+ *             @OA\Property(property="email", type="array", @OA\Items(type="string")),
+ *             @OA\Property(property="created_at", type="array", @OA\Items(type="string")),
+ *             @OA\Property(property="updated_at", type="array", @OA\Items(type="string"))
+ *         }),
+ *         @OA\Property(property="status_code", type="integer", default="400"),
+ *     }
+ * )
+ */
+
 class UserRequest extends FormRequest
 {
     /**
