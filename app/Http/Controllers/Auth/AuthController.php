@@ -2,12 +2,19 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Domain\System\UseCases\AuthUserUsecase;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AuthUserRequest;
 use Exception;
+use Illuminate\Validation\UnauthorizedException;
 
 class AuthController extends Controller
 {
+    public function __construct(
+        private AuthUserUsecase $authUser
+    ) {
+    }
+
     /**     
      * @return Response
      * @OA\Post(
@@ -50,30 +57,20 @@ class AuthController extends Controller
             $requestDTO->validated();
             $credentials = $requestDTO->only(['email', 'password']);
 
-            if (!$token = auth()->attempt($credentials)) {
+            $payload = $this->authUser->execute($credentials);
+
+            return response()->json($payload);
+        } catch (Exception $ex) {
+            if ($ex instanceof UnauthorizedException) {
                 return response()->json([
                     'error' => 'Unauthorized'
                 ], 401);
             }
 
             return response()->json([
-                'user' => $this->getMe(),
-                'authorization' => [
-                    'token' => $token,
-                    'type' => 'Bearer',
-                    'expires_in' => auth()->factory()->getTTL() * 60
-                ]
-            ]);
-        } catch (Exception $ex) {
-            response()->json([
                 'error' => $ex->getMessage()
             ], 500);
         }
-    }
-
-    private function getMe()
-    {
-        return auth()->user();
     }
 
     /**     
