@@ -37,6 +37,7 @@ class UserController extends Controller
      *     summary="List all users",
      *     operationId="index",
      *     tags={"Users"},     
+     *     security={{"bearer_token":{}}},
      *     @OA\Response(
      *         response=200,
      *         description="Success",
@@ -44,7 +45,12 @@ class UserController extends Controller
      *             type="array",
      *             @OA\Items(ref="#/components/schemas/UserRequest")
      *         ),          
-     *     )         
+     *     ),
+     *      @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(ref="#/components/schemas/AuthUserRequestValidationError")
+     *     )              
      * )
      */
     public function index()
@@ -88,7 +94,12 @@ class UserController extends Controller
      *         response=200,
      *         description="Success",
      *         @OA\JsonContent(ref="#/components/schemas/UserRequest")         
-     *     )         
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad request",
+     *         @OA\JsonContent(ref="#/components/schemas/UserRequestValidationError")
+     *     )              
      * )
      */
     public function store(UserRequest $requestDTO)
@@ -119,6 +130,7 @@ class UserController extends Controller
      *     summary="Get user by id",
      *     operationId="show",
      *     tags={"Users"},
+     *     security={{"bearer_token":{}}},
      *     @OA\Parameter(
      *         description="User id parameter",
      *         in="path",
@@ -135,7 +147,12 @@ class UserController extends Controller
      *     @OA\Response(
      *         response=400,
      *         description="Bad request"
-     *     )         
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(ref="#/components/schemas/AuthUserRequestValidationError")
+     *     )             
      * )
      */
     public function show(int $id)
@@ -153,6 +170,7 @@ class UserController extends Controller
      *     summary="Update user",
      *     operationId="update",
      *     tags={"Users"},
+     *     security={{"bearer_token":{}}},
      *     @OA\Parameter(
      *         description="User id parameter",
      *         in="path",
@@ -183,7 +201,17 @@ class UserController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="Success"
-     *     )         
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad request",
+     *         @OA\JsonContent(ref="#/components/schemas/UserRequestValidationError")
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(ref="#/components/schemas/AuthUserRequestValidationError")
+     *     )                   
      * )
      */
     public function update(UserRequest $requestDTO, int $userId)
@@ -214,6 +242,7 @@ class UserController extends Controller
      *     summary="Delete user",
      *     operationId="destroy",
      *     tags={"Users"},
+     *     security={{"bearer_token":{}}},
      *     @OA\Parameter(
      *         description="User id parameter",
      *         in="path",
@@ -229,7 +258,12 @@ class UserController extends Controller
      *     @OA\Response(
      *         response=400,
      *         description="Bad request"
-     *     )         
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(ref="#/components/schemas/AuthUserRequestValidationError")
+     *     )             
      * )
      */
     public function destroy(int $id)
