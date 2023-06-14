@@ -12,7 +12,6 @@ use App\Exceptions\CategoryDoesntExists;
 use App\Http\Errors\BadRequest;
 use App\Http\Requests\CategoryRequest;
 use Exception;
-use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
