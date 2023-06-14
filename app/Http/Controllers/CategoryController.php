@@ -26,6 +26,29 @@ class CategoryController extends Controller
     ) {
     }
 
+    /**     
+     * @return Response
+     * @OA\Get(
+     *     path="/api/v1/categories",
+     *     summary="List all categories",
+     *     operationId="category/index",
+     *     tags={"Categories"},     
+     *     security={{"bearer_token":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success",
+     *         @OA\JsonContent(     
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/CategoryRequest")
+     *         ),          
+     *     ),
+     *      @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(ref="#/components/schemas/AuthUserRequestValidationError")
+     *     )              
+     * )
+     */
     public function index()
     {
         $categories = $this->getCategories->execute();
@@ -35,6 +58,44 @@ class CategoryController extends Controller
         ]);
     }
 
+    /**     
+     * @return Response
+     * @OA\Post(
+     *     path="/api/v1/categories",
+     *     summary="Create new category",
+     *     operationId="category/store",
+     *     tags={"Categories"},
+     *     security={{"bearer_token":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Category object",
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                  @OA\Property(
+     *                     property="name",
+     *                     type="string"
+     *                 ),
+     *             )
+     *         )
+     *     ),     
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success",
+     *         @OA\JsonContent(ref="#/components/schemas/CategoryRequest")         
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad request",
+     *         @OA\JsonContent(ref="#/components/schemas/CategoryRequestValidationError")
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(ref="#/components/schemas/AuthUserRequestValidationError")
+     *     )              
+     * )
+     */
     public function store(CategoryRequest $requestDTO)
     {
         try {
@@ -51,6 +112,49 @@ class CategoryController extends Controller
         }
     }
 
+    /**     
+     * @return Response
+     * @OA\Put(
+     *     path="/api/v1/categories/{id}",
+     *     summary="Update category",
+     *     operationId="category/update",
+     *     tags={"Categories"},
+     *     security={{"bearer_token":{}}},
+     *     @OA\Parameter(
+     *         description="Category id parameter",
+     *         in="path",
+     *         name="id",
+     *         required=true     
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Category object",
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                  @OA\Property(
+     *                     property="name",
+     *                     type="string"
+     *                 ),
+     *             )
+     *         )
+     *     ),     
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad request",
+     *         @OA\JsonContent(ref="#/components/schemas/CategoryRequestValidationError")
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(ref="#/components/schemas/AuthUserRequestValidationError")
+     *     )                   
+     * )
+     */
     public function update(CategoryRequest $requestDTO, int $id)
     {
         try {
