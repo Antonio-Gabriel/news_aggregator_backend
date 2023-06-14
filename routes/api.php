@@ -15,7 +15,10 @@ Route::group(['prefix' => 'v1'], function () {
 Route::post('/login', [AuthController::class, 'signIn']);
 Route::middleware('auth.protected')->post('/logout', [AuthController::class, 'signOut']);
 
-Route::group(['prefix' => 'v1'], function () {
+Route::group([
+    'prefix' => 'v1',
+    'middleware' => 'auth.protected'
+], function () {
     Route::get('/categories', [CategoryController::class, 'index']);
     Route::post('/categories', [CategoryController::class, 'store']);
     Route::put('/categories/{id}', [CategoryController::class, 'update']);
