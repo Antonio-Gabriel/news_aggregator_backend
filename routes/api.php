@@ -11,7 +11,5 @@ Route::group(['prefix' => 'v1'], function () {
     Route::apiResource('users', UserController::class);
 });
 
-// Route::middleware('auth:api')->get('/user', [AuthController::class, 'getMe']);
-
 Route::post('/login', [AuthController::class, 'signIn']);
-Route::post('/logout', [AuthController::class, 'signOut']);
+Route::middleware('auth.protected')->post('/logout', [AuthController::class, 'signOut']);
