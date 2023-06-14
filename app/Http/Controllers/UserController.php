@@ -27,6 +27,7 @@ class UserController extends Controller
         private UpdateUserUsecase $updateUser,
         private DeleteUserUsecase $deleteUser
     ) {
+        $this->middleware('auth.protected', ['except' => ['store']]);
     }
 
     /**     
