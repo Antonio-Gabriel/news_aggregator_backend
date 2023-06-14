@@ -22,11 +22,11 @@ class ProtectedRoute
             JWTAuth::parseToken()->authenticate();
         } catch (\Exception $e) {
             if ($e  instanceof TokenInvalidException) {
-                return response()->json(['msg' => 'Token is invalid'], 401);
+                return response()->json(['error' => 'Token is invalid'], 401);
             } else if ($e instanceof TokenExpiredException) {
-                return response()->json(['msg' => 'Token has expired'], 401);
+                return response()->json(['error' => 'Token has expired'], 401);
             } else {
-                return response()->json(['msg' => 'Unauthorized'], 401);
+                return response()->json(['error' => 'Unauthorized'], 401);
             }
         }
 
