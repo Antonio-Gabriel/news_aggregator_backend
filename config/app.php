@@ -171,6 +171,7 @@ return [
         App\Providers\User\UsersServiceProvider::class,
         App\Providers\User\UserAuthProvider::class,
         App\Providers\Category\CategoryServiceProvider::class,
+        App\Providers\Article\ArticleServiceProvider::class,
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class
 
     ])->toArray(),
