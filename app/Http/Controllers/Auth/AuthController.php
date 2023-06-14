@@ -8,6 +8,42 @@ use Exception;
 
 class AuthController extends Controller
 {
+    /**     
+     * @return Response
+     * @OA\Post(
+     *     path="/api/login",
+     *     summary="Authenticate user",
+     *     operationId="signIn",
+     *     tags={"Auth"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="User object",
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                     property="email",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="password",
+     *                     type="string"
+     *                 ),
+     *             )
+     *         )
+     *     ),     
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success",
+     *         @OA\JsonContent(ref="#/components/schemas/AuthUserRequest")         
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorired",
+     *         @OA\JsonContent(ref="#/components/schemas/AuthUserRequestValidationError")
+     *     )              
+     * )
+     */
     public function signIn(AuthUserRequest $requestDTO)
     {
         try {
@@ -21,10 +57,12 @@ class AuthController extends Controller
             }
 
             return response()->json([
-                'token' => $token,
-                'token_type' => 'Bearer',
-                'expires_in' => auth()->factory()->getTTL() * 60,
-                'user' => $this->getMe()
+                'user' => $this->getMe(),
+                'authorization' => [
+                    'token' => $token,
+                    'type' => 'Bearer',
+                    'expires_in' => auth()->factory()->getTTL() * 60
+                ]
             ]);
         } catch (Exception $ex) {
             response()->json([
@@ -38,6 +76,25 @@ class AuthController extends Controller
         return auth()->user();
     }
 
+    /**     
+     * @return Response
+     * @OA\Post(
+     *     path="/api/logout",
+     *     summary="Logout user",
+     *     operationId="signOut",
+     *     tags={"Auth"},
+     *     security={{"bearer_token":{}}},    
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success"              
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorired",
+     *         @OA\JsonContent(ref="#/components/schemas/AuthUserRequestValidationError")
+     *     )              
+     * )
+     */
     public function signOut()
     {
         try {
