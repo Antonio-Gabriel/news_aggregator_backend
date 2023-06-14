@@ -27,11 +27,9 @@ use Illuminate\Foundation\Http\FormRequest;
  *     title="Create/Update UserRequestValidationError",
  *     properties={
  *         @OA\Property(property="errors", type="object", properties={
- *             @OA\Property(property="id", type="array", @OA\Items(type="string")),
  *             @OA\Property(property="name", type="array", @OA\Items(type="string")),
  *             @OA\Property(property="email", type="array", @OA\Items(type="string")),
- *             @OA\Property(property="created_at", type="array", @OA\Items(type="string")),
- *             @OA\Property(property="updated_at", type="array", @OA\Items(type="string"))
+ *             @OA\Property(property="password", type="array", @OA\Items(type="string"))
  *         })
  *     }
  * )
