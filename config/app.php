@@ -170,6 +170,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\User\UsersServiceProvider::class,
         App\Providers\User\UserAuthProvider::class,
+        App\Providers\Category\CategoryServiceProvider::class,
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class
 
     ])->toArray(),
