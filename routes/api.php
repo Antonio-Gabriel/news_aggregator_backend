@@ -29,4 +29,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('/articles', [ArticleController::class, 'index']);
     Route::post('/articles', [ArticleController::class, 'store']);
     Route::put('/articles/{id}', [ArticleController::class, 'update']);
+
+    // Filters
+    Route::get('/articles/customs', [ArticleController::class, 'custom']);
 });
