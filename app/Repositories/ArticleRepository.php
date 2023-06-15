@@ -16,6 +16,11 @@ class ArticleRepository implements IArticleRepository
         return Article::all();
     }
 
+    public function getById(int $id): ?Model
+    {
+        return Article::find($id);
+    }
+
     public function exists(string $title, int $categoryId): bool
     {
         return Article::where([
