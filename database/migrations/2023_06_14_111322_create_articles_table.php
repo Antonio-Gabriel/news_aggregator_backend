@@ -20,6 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('category_id');
             $table->string('url')->nullable();
             $table->string('url_image')->nullable();
+            $table->text('content')->nullable();
             $table->dateTime('published_at');
             $table->timestamps();
             $table->foreign('category_id', 'categoryArticle')

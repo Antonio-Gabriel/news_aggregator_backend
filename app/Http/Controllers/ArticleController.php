@@ -85,6 +85,10 @@ class ArticleController extends Controller
      *                     type="string"
      *                 ),
      *                 @OA\Property(
+     *                     property="content",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
      *                     property="category_id",
      *                     type="integer"
      *                 ),
@@ -131,6 +135,7 @@ class ArticleController extends Controller
                     "description",
                     "source",
                     "author",
+                    "content",
                     "category_id",
                     "url",
                     "url_image",
@@ -183,6 +188,10 @@ class ArticleController extends Controller
      *                     type="string"
      *                 ),
      *                 @OA\Property(
+     *                     property="content",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
      *                     property="category_id",
      *                     type="integer"
      *                 ),
@@ -228,6 +237,7 @@ class ArticleController extends Controller
                     "description",
                     "source",
                     "author",
+                    "content",
                     "category_id",
                     "url",
                     "url_image",

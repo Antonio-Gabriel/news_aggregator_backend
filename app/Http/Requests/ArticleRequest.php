@@ -26,6 +26,7 @@ class ArticleRequest extends FormRequest
             'description' => ['min:6'],
             'source' => ['min:6'],
             'author' => ['min:6'],
+            'content' => ['min:6'],
             'url' => ['url'],
             'url_image' => ['url'],
             'published_at' => ['date'],

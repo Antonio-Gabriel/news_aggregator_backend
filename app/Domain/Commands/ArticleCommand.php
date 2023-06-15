@@ -9,6 +9,7 @@ class ArticleCommand
         public ?string $description,
         public ?string $source,
         public ?string $author,
+        public ?string $content,
         public int $category_id,
         public ?string $url,
         public ?string $url_image,

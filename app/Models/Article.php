@@ -20,6 +20,7 @@ class Article extends Model
         'description',
         'source',
         'author',
+        'content',
         'category_id',
         'url',
         'url_image',
