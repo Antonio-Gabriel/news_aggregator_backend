@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Services\NewsApiGateway\NewsArticles;
+use App\Services\NyTimesApiGateway\NyNewsArticles;
 use Illuminate\Console\Command;
 
 class SyncExternalNewsAggregate extends Command
@@ -11,12 +13,24 @@ class SyncExternalNewsAggregate extends Command
      *
      * @var string
      */
-    protected $signature = 'sync:external-news-aggregate';
+    protected $signature = 'sync:external-news';
 
     protected $description = 'Get external news and insert from our database';
 
     public function handle()
     {
-        $this->withProgressBar(100, fn () => sleep(1));
+        $externalArticles = [];
+
+        $articlesService = new NewsArticles();
+        $data = $articlesService->get();
+        array_push($externalArticles, ...$data);
+
+        $nyNewsArticlesService = new NyNewsArticles();
+        $data = $nyNewsArticlesService->get();
+        array_push($externalArticles, ...$data);
+
+        $this->call('load:external-articles', [
+            'articles' => $externalArticles
+        ]);
     }
 }
