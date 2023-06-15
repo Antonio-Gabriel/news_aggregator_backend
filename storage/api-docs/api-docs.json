@@ -223,6 +223,62 @@
                 ]
             }
         },
+        "/api/v1/articles/customs": {
+            "get": {
+                "tags": [
+                    "Articles"
+                ],
+                "summary": "List all custom articles",
+                "operationId": "article/custom",
+                "parameters": [
+                    {
+                        "name": "sources",
+                        "in": "query",
+                        "description": "Sources parameter need to be separeted by comma, ex: a,b,c"
+                    },
+                    {
+                        "name": "authors",
+                        "in": "query",
+                        "description": "Authors parameter"
+                    },
+                    {
+                        "name": "categories",
+                        "in": "query",
+                        "description": "Categories parameter"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ArticleResource"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AuthUserRequestValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/api/login": {
             "post": {
                 "tags": [
