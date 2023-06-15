@@ -29,9 +29,9 @@ class ArticleRepository implements IArticleRepository
         ])->exists();
     }
 
-    public function getByFilters(array $filters): Collection
+    public function getQuery()
     {
-        return collect();
+        return Article::query();
     }
 
     public function create(ArticleCommand $entity): ?Model
