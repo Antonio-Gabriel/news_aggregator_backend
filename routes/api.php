@@ -3,6 +3,7 @@
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -32,4 +33,13 @@ Route::group(['prefix' => 'v1'], function () {
 
     // Filters
     Route::get('/articles/customs', [ArticleController::class, 'custom']);
+});
+
+Route::group([
+    'prefix' => 'v1',
+    'middleware' => 'auth.protected'
+], function () {
+    Route::post('/users/settings', [SettingsController::class, 'store']);
+    Route::get('/users/settings/{userId}', [SettingsController::class, 'show']);
+    Route::put('/users/settings/{id}', [SettingsController::class, 'update']);
 });
