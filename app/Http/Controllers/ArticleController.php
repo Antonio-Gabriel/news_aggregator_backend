@@ -23,7 +23,7 @@ class ArticleController extends Controller
         private UpdateArticleUsecase $updateArticle,
         private FilterArticlesQuery $articlesQuery
     ) {
-        $this->middleware('auth.protected', ['except' => ['index', 'store']]);
+        $this->middleware('auth.protected', ['except' => ['index']]);
     }
 
     /**     
