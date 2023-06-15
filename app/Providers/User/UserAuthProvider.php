@@ -2,8 +2,10 @@
 
 namespace App\Providers\User;
 
+use App\Domain\System\Queries\Settings\GetUserSettingsQuery;
 use App\Domain\System\UseCases\AuthUserUsecase;
 use App\Http\Controllers\Auth\AuthController;
+use App\Repositories\SettingsRepository;
 use Illuminate\Support\ServiceProvider;
 
 class UserAuthProvider extends ServiceProvider
@@ -14,7 +16,12 @@ class UserAuthProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(AuthController::class, function () {
-            $authUser = new AuthUserUsecase;
+            $settingsRepository = new SettingsRepository;
+
+            // Queries
+            $settingsQuery = new GetUserSettingsQuery($settingsRepository);
+
+            $authUser = new AuthUserUsecase($settingsQuery);
 
             return new AuthController($authUser);
         });
