@@ -15,20 +15,19 @@ For this demo I've used only two providers because another has error to load the
 
 ## Get started
 
-First install docker in your device or copy the project in your local server and create a database with the name `NewsAggregatorDb`.
+First install docker in your device or copy the project in your local server and create a database with the name `newsaggregatordb`.
 
 Rename the `.env.example` file to `.env` and add the key for external apis
-
 
 After run the commands bellow.
 
 With docker:
 ```bash
 # ubuntu
-sudo docker-compose up --build
+sudo docker-compose up
 
 # or
-docker-compose up --build
+docker-compose up
 ```
 
 Without docker:
@@ -48,7 +47,7 @@ bash.sh
 
 When the app is running to access the docummentations:
 
-[http://127.0.0.1:8000/api/documentation](http://127.0.0.1:8000/api/documentation)
+[http://0.0.0.0:8080/api/documentation](http://0.0.0.0:8080/api/documentation)
 
 The default user credentials to auth is:
 
