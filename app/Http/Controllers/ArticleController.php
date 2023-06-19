@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Domain\Commands\ArticleCommand;
 use App\Domain\System\Queries\Article\FilterArticlesQuery;
+use App\Domain\System\Queries\Article\GetArticleByIdQuery;
 use App\Domain\System\Queries\Article\GetArticlesQuery;
 use App\Domain\System\UseCases\Article\CreateArticleUsecase;
 use App\Domain\System\UseCases\Article\UpdateArticleUsecase;
@@ -19,11 +20,12 @@ class ArticleController extends Controller
 
     public function __construct(
         private GetArticlesQuery $getArticles,
+        private GetArticleByIdQuery $getArticle,
         private CreateArticleUsecase $createArticle,
         private UpdateArticleUsecase $updateArticle,
         private FilterArticlesQuery $articlesQuery
     ) {
-        $this->middleware('auth.protected', ['except' => ['index']]);
+        $this->middleware('auth.protected', ['except' => ['index', 'show']]);
     }
 
     /**     
@@ -40,18 +42,39 @@ class ArticleController extends Controller
      *             type="array",
      *             @OA\Items(ref="#/components/schemas/ArticleResource")
      *         ),          
-     *     ),
-     *      @OA\Response(
-     *         response=401,
-     *         description="Unauthorized",
-     *         @OA\JsonContent(ref="#/components/schemas/AuthUserRequestValidationError")
-     *     )              
+     *     )       
      * )
      */
     public function index()
     {
         $articles = $this->getArticles->execute();
         return ArticleResource::collection($articles);
+    }
+
+    /**     
+     * @return Response
+     * @OA\Get(
+     *     path="/api/v1/articles/{id}",
+     *     summary="List all articles",
+     *     operationId="article/show",
+     *     tags={"Articles"},   
+     *     @OA\Parameter(
+     *         description="Article id parameter",
+     *         in="path",
+     *         name="id",
+     *         required=true     
+     *     ),  
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success",
+     *         @OA\JsonContent(ref="#/components/schemas/ArticleResource"),          
+     *     )           
+     * )
+     */
+    public function show(int $id)
+    {
+        $article = $this->getArticle->execute($id);
+        return new ArticleResource($article);
     }
 
     /**     

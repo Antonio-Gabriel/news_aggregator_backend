@@ -3,6 +3,7 @@
 namespace App\Providers\Article;
 
 use App\Domain\System\Queries\Article\FilterArticlesQuery;
+use App\Domain\System\Queries\Article\GetArticleByIdQuery;
 use App\Domain\System\Queries\Article\GetArticlesQuery;
 use App\Domain\System\Queries\Category\GetCategoryByIdQuery;
 use App\Domain\System\UseCases\Article\CreateArticleUsecase;
@@ -27,12 +28,13 @@ class ArticleServiceProvider extends ServiceProvider
             $articlesQuery = new GetArticlesQuery($articleRepository);
             $categoryQuery = new GetCategoryByIdQuery($categoryRepository);
             $filterArticlesQuery = new FilterArticlesQuery($articleRepository);
+            $articlesByIdQuery = new GetArticleByIdQuery($articleRepository);
 
             // Usecase
             $createArticle = new CreateArticleUsecase($articleRepository, $categoryQuery);
             $updateArticle = new UpdateArticleUsecase($articleRepository);
 
-            return new ArticleController($articlesQuery, $createArticle, $updateArticle, $filterArticlesQuery);
+            return new ArticleController($articlesQuery, $articlesByIdQuery, $createArticle, $updateArticle, $filterArticlesQuery);
         });
     }
 
